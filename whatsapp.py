@@ -13,12 +13,14 @@ user.click()
 
 #change the user by copying its xpath
 
-for i in range(5):
-	driver.find_element_by_xpath('/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div[2]/div/div[2]').send_keys('Hi')
+for i in range(2):
+	driver.find_element_by_xpath('/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div[2]/div/div[2]').send_keys('Automation test')
 	
 	button = driver.find_element_by_xpath('/html/body/div[1]/div/div/div[4]/div/footer/div[1]/div[3]/button')
 
 	button.click()
 	
+	
+#Pin the chat at the top for not to change any xpath
 
 
