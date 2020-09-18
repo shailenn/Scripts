@@ -5,6 +5,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
+from selenium.webdriver.support.ui import Select
 #from time import sleep, time, timezone
 
 class PlayStore:
@@ -14,7 +15,7 @@ class PlayStore:
 
 
     def traverse(self):
-        print('Hi')
+        print('1HI')
         driver = self.driver
         scrolls = 5
         while True:
@@ -32,7 +33,7 @@ class PlayStore:
         print('Hello')
         driver = self.driver
 
-        for i in range(192):
+        for i in range(5):
             c = self.traverse()
 
         scrolls = 5
@@ -63,8 +64,16 @@ class PlayStore:
                 while str(names[n].text).find("Kotak") != -1:
                     d += 1
                     n += 1
-                file.write(",".join([names[n].text, ratings[r].next_element["aria-label"], dates[d].text, reviews[re].text]))
+
+                val = reviews[re].text.replace(',',';').find('Full Review')
+
+                if val == -1:
+                    file.write(",".join([names[n].text, ratings[r].next_element["aria-label"], dates[d].text, reviews[re].text.replace(',',';')]))
+                else:
+                    file.write(",".join([names[n].text, ratings[r].next_element["aria-label"], dates[d].text, reviews[re].text.replace(',',';').split('Full Review')[1]]))
                 file.write('\n')
+                #file.write(",".join([names[n].text, ratings[r].next_element["aria-label"], dates[d].text, val = reviews[re].text.replace(',',';').find('Full Review')
+
             except:
                 pass
 
@@ -80,8 +89,17 @@ def main():
 
     driver = webdriver.Chrome(executable_path=r"C:\Users\shailendra bisht\Downloads\chromedriver")
     driver.maximize_window()
-    baseUrl = 'https://play.google.com/store/apps/details?id=com.msf.kotak&hl=en_IN&showAllReviews=true'
+    baseUrl = 'https://play.google.com/store/apps/details?id=com.divinememorygames.pedometer&showAllReviews=true'
+    #baseUrl = 'https://play.google.com/store/apps/details?id=com.msf.kotak&hl=en_IN&showAllReviews=true'
     driver.get(baseUrl)
+    time.sleep(5)
+    button = driver.find_element_by_xpath('/html/body/div[1]/div[4]/c-wiz/div/div[2]/div/div/main/div/div[1]/div[2]/c-wiz/div[1]/div/div[1]/div[1]')
+    #/html/body/div[1]/div[4]/c-wiz/div/div[2]/div/div/main/div/div[1]/div[2]/c-wiz/div[1]/div/div[1]/div[2]/span
+    button.click()
+
+    button1 = WebDriverWait(driver, 30).until(
+        EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[4]/c-wiz/div/div[2]/div/div/main/div/div[1]/div[2]/c-wiz/div[1]/div/div[2]/div[1]/span")))
+    button1.click()
 
     return driver
 
@@ -90,4 +108,4 @@ def main():
 if __name__ == '__main__':
     P = PlayStore()
     P.get_data()
-    P.traverse()
+    #P.traverse()
