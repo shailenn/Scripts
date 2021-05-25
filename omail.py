@@ -17,7 +17,7 @@ class Omail:
 		self.driver = main()
 
 
-	def newemail(self):
+	def newemail(self, enteredkey):
 		print('check')
 		driver = self.driver
 		
@@ -31,9 +31,11 @@ class Omail:
 		#Inputs            
 		
 		time.sleep(1)
-	
-		keyword = driver.find_element_by_xpath('//*[@id="keywords"]').send_keys('investor')
-	
+		
+		#Selection of keyword
+		keyword = driver.find_element_by_xpath('//*[@id="keywords"]').send_keys(enteredkey)
+		
+		#Select from dropdown
 		sel = Select(driver.find_element_by_xpath('//*[@id="country"]'))
 		sel.select_by_visible_text("Albania(Shqipëri)")
 		time.sleep(1)
@@ -44,8 +46,10 @@ class Omail:
 		start_extraction = driver.find_element_by_xpath('//*[@id="id_start_extract"]')
 		start_extraction.click()
 		
+		#sleep to be increased if code stopped while extraction
 		time.sleep(30)		
 		
+		#Click on cancel after extraction
 		cancel = driver.find_element_by_xpath('//*[@id="id_dialog_mail_list_close"]')
 		cancel.click()
 		
@@ -54,26 +58,38 @@ class Omail:
 		print('loops')
 		driver = self.driver
 		
-		for i in range(1):
-			c = self.newemail()								
+		#Reading file for keywords
 		
+		keyfile = open('omail.txt', 'r')
+		keys = keyfile.readlines()
+
+		#shifting keys from file to list named as list_of_keywords
+		list_of_keywords = [key.strip() for key in keys]
+		print(list_of_keywords) 
+		
+
+		#enteredkey is the current keyword for individual i in loop
+		for i in range(1):
+			enteredkey = list_of_keywords[i]
+			c = self.newemail(enteredkey)								
+		
+		#Click on Email Database
 		database1000 = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[3]/ul/li[3]/a')
 		database1000.click()
 		
-		#soup = BeautifulSoup(driver.page_source, 'html.parser')
+		#soup = BeautifulSoup(driver.page_source, 'html.parser')		
+		#print(soup didn't work so using selenium driver to extract data)
 		
-		#print(soup)
 		email_list = []
 		table_id = driver.find_element_by_xpath('//*[@id="table_mail_list"]')
 		rows = table_id.find_elements(By.TAG_NAME, "tr")
 		for row in rows:
 			email_list.append(row.text)
-			
-			
-			#col = row.find_elements(By.TAG_NAME, "td")
-			#print(col)
-			#print(1)
-		email_list.pop(0)
+		
+		#Pop 0th element i.e. first row
+		#email_list.pop(0)
+		
+		#Extracting from 1st page and after clicking on nextpage1 it will switch to page 2
 		next_page1 = driver.find_element_by_xpath('/html/body/div[1]/div[3]/div/div/div[2]/div[6]/div[2]/ul/li[6]/a')
 		next_page1.click()
 		time.sleep(5)
@@ -82,6 +98,7 @@ class Omail:
 		while True:
 			try:
 
+				#from page 2 till last page while will run to extract data
 				table_id = driver.find_element_by_xpath('//*[@id="table_mail_list"]')
 				rows = table_id.find_elements(By.TAG_NAME, "tr")
 				for row in rows:
@@ -92,20 +109,29 @@ class Omail:
 				next_page.click()
 				time.sleep(5)
 			
-			
-			#col = row.find_elements(By.TAG_NAME, "td")
-			#print(col)
-			#print(1)
-				#email_list.pop(count)
-		#print(email_list)
-				
-				
-							
+			#while break on reaching to last page				
+		
 			except:
 				break
+				
+		#Remove duplicates of 1st heading row
+		final_email_list = set(email_list)
 		
-		for i in email_list:
+		email_lists = list(final_email_list)
+		
+		#Pop 0th element i.e. first row
+		email_lists.pop(0)
+		
+		file = open('omailemail.csv','w+')
+		#file.join()
+		
+		for i in email_lists:
 			print(i.split(' ')[0])
+			#file.write(",".join(i.split(' ')[0], i.split(' ')[1], i.split(' ')[2], i.split(' ')[3]))
+			file.write(i.split(' ')[0])
+			
+			
+			file.write("\n")
 			#Website :- print(i.split(' ')[1])
 			#Mail_Type :- print(i.split(' ')[2])
 			#Mail_Exchanger :- print(i.split(' ')[3])
@@ -121,7 +147,7 @@ def main():
 	driver.get(baseUrl)
 	time.sleep(5)
 		
-	#Extract Email from Websites
+	#Click on Extract Email from Websites
 	
 	button = driver.find_element_by_xpath('/html/body/div/div[2]/section[1]/div/div[1]/a')
 	button.click()
