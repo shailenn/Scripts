@@ -47,7 +47,7 @@ class Omail:
 		start_extraction.click()
 		
 		#sleep to be increased if code stopped while extraction
-		time.sleep(30)		
+		time.sleep(40)		
 		
 		#Click on cancel after extraction
 		cancel = driver.find_element_by_xpath('//*[@id="id_dialog_mail_list_close"]')
@@ -67,11 +67,45 @@ class Omail:
 		list_of_keywords = [key.strip() for key in keys]
 		print(list_of_keywords) 
 		
-
+		clear = [2,4,6,8]
 		#enteredkey is the current keyword for individual i in loop
-		for i in range(1):
-			enteredkey = list_of_keywords[i]
-			c = self.newemail(enteredkey)								
+		for i in range(5):
+			#Clear the databse if it is full
+			if i in clear:
+				e = self.databse()
+				#Now clear
+				checkbox = driver.find_element_by_xpath('/html/body/div[1]/div[3]/div/div/div[2]/div[6]/div[1]/table/thead/tr/th[1]/label/input')
+				checkbox.click()
+				
+				#Click on remove
+				time.sleep(5)
+				remove = driver.find_element_by_xpath('//*[@id="id_button_remove"]')
+				remove.click()
+				
+				#Popup remove 
+				time.sleep(5)
+				popupcheckbox = driver.find_element_by_xpath('//*[@id="id_dialog_remove"]')
+				popupcheckbox.click()
+				
+				#GoTo Email Extractor page
+				time.sleep(5)
+				extra = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[3]/ul/li[2]/a')
+				extra.click()
+								
+				
+				#Than continue the loop
+				enteredkey = list_of_keywords[i]
+				f = self.newemail(enteredkey)
+				
+			else:
+			
+				enteredkey = list_of_keywords[i]
+				c = self.newemail(enteredkey)
+			
+		d = self.databse()
+
+	def databse(self):
+		driver = self.driver
 		
 		#Click on Email Database
 		database1000 = driver.find_element_by_xpath('/html/body/div[1]/div[2]/div[3]/ul/li[3]/a')
@@ -122,7 +156,7 @@ class Omail:
 		#Pop 0th element i.e. first row
 		email_lists.pop(0)
 		
-		file = open('omailemail.csv','w+')
+		file = open('omailemail.csv','a+')
 		#file.join()
 		
 		for i in email_lists:
@@ -135,6 +169,7 @@ class Omail:
 			#Website :- print(i.split(' ')[1])
 			#Mail_Type :- print(i.split(' ')[2])
 			#Mail_Exchanger :- print(i.split(' ')[3])
+		file.close()
 		
 		
 	
