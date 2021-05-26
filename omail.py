@@ -37,7 +37,7 @@ class Omail:
 		
 		#Select from dropdown
 		sel = Select(driver.find_element_by_xpath('//*[@id="country"]'))
-		sel.select_by_visible_text("Albania(Shqipëri)")
+		sel.select_by_visible_text("India(भारत)")
 		time.sleep(1)
 		#sel.select_by_index(0)
 	
@@ -47,7 +47,7 @@ class Omail:
 		start_extraction.click()
 		
 		#sleep to be increased if code stopped while extraction
-		time.sleep(40)		
+		time.sleep(100)		
 		
 		#Click on cancel after extraction
 		cancel = driver.find_element_by_xpath('//*[@id="id_dialog_mail_list_close"]')
@@ -67,9 +67,9 @@ class Omail:
 		list_of_keywords = [key.strip() for key in keys]
 		print(list_of_keywords) 
 		
-		clear = [2,4,6,8]
+		clear = [4,8,12,16,20,24,28,32,36,40,44,48,52,56,60,64,68,72,76,80,84,88,92,96,100,104,108,112,116,120,124,128,132,136,140,144,148]
 		#enteredkey is the current keyword for individual i in loop
-		for i in range(5):
+		for i in range(143):
 			#Clear the databse if it is full
 			if i in clear:
 				e = self.databse()
@@ -161,8 +161,8 @@ class Omail:
 		
 		for i in email_lists:
 			print(i.split(' ')[0])
-			#file.write(",".join(i.split(' ')[0], i.split(' ')[1], i.split(' ')[2], i.split(' ')[3]))
-			file.write(i.split(' ')[0])
+			file.write(",".join(i.split(' ')))
+			#file.write(i.split(' ')[0])
 			
 			
 			file.write("\n")
