@@ -1,0 +1,42 @@
+Sub WhatsAppMsg()
+
+Dim LastRow As Long
+Dim i As Integer
+Dim strip As String
+Dim strPhoneNumber As String
+Dim strMessage As String
+Dim strPostData As String
+Dim IE As Object
+
+LastRow = 9
+
+
+'LastRow = Range("A" & Rows.Count).End(x1Up).Row
+
+For i = 2 To LastRow
+
+    strPhoneNumber = Sheets("Data").Cells(i, 1).Value
+    strMessage = Sheets("Data").Cells(i, 2).Value
+      s = "Hello"
+            Debug.Print s 'Write to Immediate window'
+    
+    'IE.navigate "whatsapp://send?phone=phone_number&text=ypur_message"
+    
+        strPostData = "whatsapp://send?phone=" & strPhoneNumber & "&text=" & strMessage
+        Set IE = CreateObject("InternetExplorer.Application")
+        Application.Wait Now() + TimeSerial(0, 0, 20)
+        IE.navigate strPostData
+        Application.Wait Now() + TimeSerial(0, 0, 10)
+        SendKeys "{ENTER}", True
+        
+        
+        'Application.Wait Now() + TimeSerial(0, 0, 10)
+        'SendKeys "{TAB}", True
+        'Application.Wait Now() + TimeSerial(0, 0, 10)
+        'SendKeys "{TAB}", True
+
+
+    Next i
+
+End Sub
+
